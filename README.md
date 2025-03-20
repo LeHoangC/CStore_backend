@@ -11,4 +11,7 @@
 ## Trang chi tiết sản phẩm dễ nhìn và trực quan:
 ![image](https://github.com/user-attachments/assets/3ab38d32-c315-4097-abf9-d8cc420d8fad)
 
+## Trang chi tiết của 1 đơn hàng:
+![image](https://github.com/user-attachments/assets/f48451e3-e3da-4a09-ae58-954e00c6bb15)
+
 ## Dự án có áp dụng việc sử dụng redis cho việc tính đồng thời cao khi mua hàng và cache dữ liệu:
