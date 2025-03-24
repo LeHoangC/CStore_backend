@@ -32,6 +32,7 @@ router.post('/attachments', uploadDisk.single('attachment'), (req, res) => {
 })
 
 
+router.use('/review', require('./review'))
 router.use('/setting', require('./setting'))
 router.use('/orders', require('./order'))
 router.use('/analytic', require('./analytic'))
