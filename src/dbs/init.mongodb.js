@@ -14,7 +14,7 @@ class Database {
         mongoose
             .connect(connectString)
             .then((_) => {
-                console.log('Connected success')
+                console.log('Connected mongo success')
             })
             .catch((err) => console.log(`Error Connect ${err}`))
     }
