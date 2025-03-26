@@ -80,4 +80,15 @@ productSchema.pre("save", function (next) {
     next();
 })
 
+// Trong schema Product
+productSchema.virtual('reviews', {
+    ref: 'Review',
+    localField: '_id',
+    foreignField: 'review_productId'
+});
+
+// Đảm bảo virtual được included khi query
+productSchema.set('toObject', { virtuals: true });
+productSchema.set('toJSON', { virtuals: true });
+
 module.exports = mongoose.model(DOCUMENT_NAME, productSchema);;

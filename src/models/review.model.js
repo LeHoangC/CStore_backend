@@ -15,6 +15,18 @@ const reviewSchema = new Schema(
             ref: 'Order',
             required: true,
         },
+        review_productId: {
+            type: mongoose.Types.ObjectId,
+            ref: "Product",
+            required: true,
+        },
+        review_variantId: {
+            type: mongoose.Types.ObjectId,
+            required: false,
+        },
+        review_variant_name: {
+            type: String,
+        },
         review_images: {
             type: Array,
             default: []
@@ -23,10 +35,12 @@ const reviewSchema = new Schema(
             type: String,
             default: ''
         },
-        review_rating: {
+        rating: {
             type: Number,
-            default: 5
-        }
+            required: true,
+            min: [1, "Điểm đánh giá phải từ 1 đến 5"],
+            max: [5, "Điểm đánh giá phải từ 1 đến 5"],
+        },
     },
     {
         timestamps: true,
