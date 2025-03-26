@@ -11,5 +11,4 @@ logs/
 *.log
 *.log.*
 
-src/services
 public
