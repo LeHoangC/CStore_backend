@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { countConnect } = require('../helpers/checkConnect')
 mongoose.set('strictQuery', true)
 mongoose.set('debug', true)
 mongoose.set('debug', { color: true })
@@ -14,7 +15,7 @@ class Database {
         mongoose
             .connect(connectString)
             .then((_) => {
-                console.log('Connected mongo success')
+                console.log('Connected mongo success', countConnect())
             })
             .catch((err) => console.log(`Error Connect ${err}`))
     }

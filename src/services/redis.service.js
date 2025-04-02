@@ -1,17 +1,14 @@
-const Redis = require('ioredis');
+const { getRedis } = require('../dbs/init.redis');
 const PRODUCT_MODEL = require('../models/product.model');
-const redis = new Redis()
 
-redis.on('connect', () => {
-    console.log('Redis connected');
-})
+const { instanceConnect: redisClient } = getRedis()
 
 const acquireProductLock = async ({ productId, quantity, lockTimeoutSeconds = 10 }) => {
     const lockKey = `product_lock:${productId}`
     const retryTimes = 10
 
     for (let i = 0; i < retryTimes; i++) {
-        const result = await redis.set(lockKey, 'locked', 'NX', 'EX', lockTimeoutSeconds);
+        const result = await redisClient.set(lockKey, 'locked', 'NX', 'EX', lockTimeoutSeconds);
 
         if (result === 'OK') {
             const updated = await PRODUCT_MODEL.findOneAndUpdate(
@@ -37,7 +34,7 @@ const acquireVariantLock = async ({ productId, variantId, quantity, lockTimeoutS
     const retryTimes = 10
 
     for (let i = 0; i < retryTimes; i++) {
-        const result = await redis.set(lockKey, 'locked', 'NX', 'EX', lockTimeoutSeconds);
+        const result = await redisClient.set(lockKey, 'locked', 'NX', 'EX', lockTimeoutSeconds);
         if (result === 'OK') {
             const updated = await PRODUCT_MODEL.findOneAndUpdate(
                 {
@@ -64,7 +61,7 @@ const acquireVariantLock = async ({ productId, variantId, quantity, lockTimeoutS
 }
 
 const releaseLock = async (keyLock) => {
-    return await redis.del(keyLock)
+    return await redisClient.del(keyLock)
 }
 
 module.exports = {

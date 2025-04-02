@@ -1,6 +1,8 @@
-const getSelectData = (select = []) => {
-    return Object.fromEntries(select.map((el) => [el, 1]))
+console.time("V8 Speed");
+let sum = 0;
+for (let i = 0; i < 1e9; i++) {
+    sum += i;
 }
+console.log(sum);
 
-
-console.log(getSelectData([1, 2, 3, 4]));
+console.timeEnd("V8 Speed");

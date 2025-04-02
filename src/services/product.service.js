@@ -143,10 +143,10 @@ class ProductService {
                 // Bước 1: Tham gia (join) với collection categories để lấy tên danh mục
                 {
                     $lookup: {
-                        from: "categories", // Tên collection chứa danh mục
-                        localField: "category", // Trường trong products chứa id danh mục
-                        foreignField: "_id", // Trường trong categories để so khớp (thường là _id)
-                        as: "categoryInfo" // Tên mảng để lưu thông tin danh mục
+                        from: "categories",
+                        localField: "category",
+                        foreignField: "_id",
+                        as: "categoryInfo"
                     }
                 },
                 // Bước 2: Giải nén mảng categoryInfo (vì $lookup trả về mảng)
@@ -158,19 +158,15 @@ class ProductService {
                     $group: {
                         _id: "$categoryInfo.name", // Nhóm theo tên danh mục
                         value: { $sum: 1 } // Đếm số lượng sản phẩm trong mỗi danh mục
-                        // Nếu bạn muốn tính tổng giá trị (ví dụ: giá sản phẩm), thay bằng:
-                        // value: { $sum: "$price" }
                     }
                 },
-                // Bước 4: Định dạng lại kết quả để khớp với cấu trúc mong muốn
                 {
                     $project: {
-                        _id: 0, // Ẩn trường _id
-                        name: "$_id", // Đặt tên danh mục vào trường name
-                        value: 1 // Giữ nguyên giá trị đã tính
+                        _id: 0,
+                        name: "$_id",
+                        value: 1
                     }
                 },
-                // Bước 5: Sắp xếp theo giá trị (nếu cần)
                 {
                     $sort: { value: -1 } // Sắp xếp giảm dần theo value
                 }

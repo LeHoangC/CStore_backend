@@ -7,7 +7,6 @@ const { checkDiscountExist, getApplicableProducts } = require('../models/reposit
 const { generateRandomCode } = require('../models/repositories/order.repo')
 const { checkProductByServer } = require('../models/repositories/product.repo')
 const { sendOrderToQueue } = require('../queues/producers/orderProducer')
-const { sendSoldQuantityToQueue } = require('../queues/producers/soldQuantityProducer')
 const { convertToObjectIdMongodb } = require('../utils')
 const DiscountService = require('./discount.service')
 const { acquireVariantLock, acquireProductLock, releaseLock } = require('./redis.service')
@@ -98,7 +97,7 @@ class CheckoutService {
         // send mail
         // tích điểm...
 
-        await sendSoldQuantityToQueue(newOrder.order_product.map(item => ({ productId: item.product._id, quantity: item.quantity })))
+        await sendOrderToQueue(newOrder)
 
         for (const item of products) {
             await CART_MODEL.updateOne(

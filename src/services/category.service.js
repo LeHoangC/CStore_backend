@@ -1,5 +1,8 @@
 const ErrorResponse = require('../core/error.response');
+const { getRedis } = require('../dbs/init.redis');
 const CATEGORY_MODEL = require('../models/category.model');
+
+const { instanceConnect: redisClient } = getRedis()
 
 class CategoriesService {
     static createCategory = async ({ name, description }) => {
@@ -33,7 +36,14 @@ class CategoriesService {
 
     static getCategories = async () => {
         // return await CATEGORY_MODEL.find();
-        return await CATEGORY_MODEL.aggregate([
+        const cacheKey = 'categories'
+
+        const cacheData = await redisClient.get(cacheKey)
+        if (cacheData) {
+            return JSON.parse(cacheData)
+        }
+
+        const categories = await CATEGORY_MODEL.aggregate([
             {
                 $lookup: {
                     from: "products",
@@ -53,6 +63,10 @@ class CategoriesService {
                 }
             }
         ])
+
+        await redisClient.set(cacheKey, JSON.stringify(categories))
+
+        return categories
     }
 
     static getCategoryById = async (id) => {

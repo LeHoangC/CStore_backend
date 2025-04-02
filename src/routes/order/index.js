@@ -11,6 +11,7 @@ router.get('/orderByUser/:orderId', asyncHandler(orderController.getOrderByUser)
 
 router.use(checkAdmin)
 
+router.patch('/', asyncHandler(orderController.updateStatusOrder))
 router.get('/', asyncHandler(orderController.getAllOrderByAdmin))
 
 module.exports = router

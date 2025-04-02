@@ -10,6 +10,10 @@ class OrderController {
         return res.status(200).json(await OrderService.getOrderByUser(req.params.orderId))
     }
 
+    updateStatusOrder = async (req, res, next) => {
+        return res.status(200).json(await OrderService.updateStatusOrder({ ...req.body }))
+    }
+
     getAllOrderByAdmin = async (req, res, next) => {
         return res.status(200).json(await OrderService.getAllOrderByAdmin(req.query))
     }

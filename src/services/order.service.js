@@ -1,3 +1,4 @@
+const ErrorResponse = require('../core/error.response')
 const ORDER_MODEL = require('../models/order.model')
 const { getUnSelectData } = require('../utils')
 
@@ -10,6 +11,18 @@ class OrderService {
 
     static getOrderByUser = (orderId) => {
         return ORDER_MODEL.findById(orderId).populate('order_user', 'user_name').lean()
+    }
+
+    static updateStatusOrder = async ({ orderId, newStatus }) => {
+        const foundOrder = await ORDER_MODEL.findById(orderId)
+
+        if (!foundOrder) {
+            throw new ErrorResponse("Đơn hàng không tồn tại.", 400)
+        }
+        foundOrder.order_status = newStatus
+        await foundOrder.save()
+
+        return 1
     }
 
     static getAllOrderByAdmin = async ({ page = 1, limit = 10, search = null }) => {
@@ -100,11 +113,11 @@ class OrderService {
                         color: {
                             $switch: {
                                 branches: [
-                                    { case: { $eq: ["$_id", "pending"] }, then: "#FF6B6B" },
-                                    { case: { $eq: ["$_id", "confirmed"] }, then: "#5c62f6" },
-                                    { case: { $eq: ["$_id", "shipped"] }, then: "#45B7D1" },
-                                    { case: { $eq: ["$_id", "cancelled"] }, then: "#FF4500" },
-                                    { case: { $eq: ["$_id", "delivered"] }, then: "#FED766" },
+                                    { case: { $eq: ["$_id", "pending"] }, then: "#991B1B" }, // text-red-800
+                                    { case: { $eq: ["$_id", "confirmed"] }, then: "#854D0E" }, // text-yellow-800
+                                    { case: { $eq: ["$_id", "shipped"] }, then: "#1E3A8A" }, // text-blue-800
+                                    { case: { $eq: ["$_id", "cancelled"] }, then: "#1F2937" }, // text-gray-800
+                                    { case: { $eq: ["$_id", "delivered"] }, then: "#166534" }, // text-green-800
                                 ],
                                 default: "#000000",
                             },

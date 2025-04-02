@@ -30,7 +30,10 @@ app.use(cors({
 }))
 
 require('./dbs/init.mongodb')
-require('./dbs/init.redis')
+// require('./dbs/init.redis')
+const { initRedis } = require('./dbs/init.redis')
+
+initRedis({ IS_ENABALED: true })
 
 app.use('/api', require('./routes'))
 
