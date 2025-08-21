@@ -1,3 +1,4 @@
+const { getCountDocumentsByFilter } = require('../models/repositories/index.repo');
 const USER_MODEL = require('../models/user.model');
 const { getUnSelectData } = require('../utils');
 
@@ -8,9 +9,7 @@ class UserService {
         const { search, page, limit = 5 } = query
 
         const skip = (page - 1) * limit
-
         const filter = {}
-
         const regexSearch = new RegExp(search)
         if (search) {
             filter['$text'] = { $search: regexSearch }
@@ -18,7 +17,7 @@ class UserService {
 
         const [users, totalUser] = await Promise.all([
             USER_MODEL.find(filter).skip(skip).limit(limit).select(getUnSelectData(['user_password'])),
-            USER_MODEL.countDocuments(filter)
+            getCountDocumentsByFilter(USER_MODEL, filter),
         ])
 
         const totalPages = Math.ceil(totalUser / limit)

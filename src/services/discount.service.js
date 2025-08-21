@@ -143,17 +143,16 @@ class DiscountService {
             throw new ErrorResponse('Giỏ hàng không tồn tại.')
         }
 
+        if (!products.length) {
+            throw new ErrorResponse('Vui lòng chọn sản phẩm trước khi áp dụng discount', 400)
+        }
+
         validateProductsExistInCart(products, foundCart.cart_products)
 
         const foundDiscount = await checkDiscountExist({ discount_code: discountCode })
 
         if (!foundDiscount) {
             throw new ErrorResponse(`Discount doesn't exitst`)
-        }
-
-
-        if (!products.length) {
-            throw new ErrorResponse('Vui lòng chọn sản phẩm trước khi áp dụng discount', 400)
         }
 
         const {
@@ -195,7 +194,7 @@ class DiscountService {
         if (discount_max_user_per_used > 0) {
             const userUsedDiscount = discount_users_used.filter((user) => user.userId === userId).length
 
-            if (userUsedDiscount && userUsedDiscount >= discount_user_per_used) {
+            if (userUsedDiscount && userUsedDiscount >= discount_max_user_per_used) {
                 throw new ErrorResponse('Limit discount user', 400)
             }
         }

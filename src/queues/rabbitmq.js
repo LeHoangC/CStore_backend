@@ -7,7 +7,7 @@ async function connectRabbitMQ() {
     if (channel) return channel;
 
     try {
-        connection = await amqp.connect('amqp://localhost:5672');
+        connection = await amqp.connect('amqp://admin:admin@localhost:5672');
         channel = await connection.createChannel();
         console.log('[RabbitMQ] Connected');
 

@@ -1,5 +1,6 @@
 const ErrorResponse = require('../core/error.response')
 const ORDER_MODEL = require('../models/order.model')
+const { getCountDocumentsByFilter } = require('../models/repositories/index.repo')
 const { getUnSelectData } = require('../utils')
 
 
@@ -34,8 +35,8 @@ class OrderService {
         }
 
         const [orders, totalItems] = await Promise.all([
-            ORDER_MODEL.find(filter).skip(skip).limit(limit).populate('order_user', 'user_name').lean(),
-            ORDER_MODEL.countDocuments(filter),
+            ORDER_MODEL.find(filter).skip(skip).limit(limit).populate('order_user', 'user_name').sort({ createdAt: -1 }).lean(),
+            getCountDocumentsByFilter(ORDER_MODEL, filter),
         ])
 
         const totalPages = Math.ceil(totalItems / limit)
@@ -59,7 +60,7 @@ class OrderService {
         sevenDaysAgo.setDate(today.getDate() - 6);
 
         const [totalOrders, totalRevenue, orderByDate, orderStatusData] = await Promise.all([
-            ORDER_MODEL.countDocuments(),
+            getCountDocumentsByFilter(ORDER_MODEL),
             ORDER_MODEL.aggregate([
                 {
                     $match: { order_status: "delivered" } // Chỉ lấy đơn đã hoàn thành
