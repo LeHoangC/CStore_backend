@@ -1,6 +1,7 @@
 const orderModel = require('../models/order.model')
 const PRODUCT_MODEL = require('../models/product.model')
-const { findAllProducts } = require('../models/repositories/product.repo')
+const { getCountDocumentsByFilter } = require('../models/repositories/index.repo')
+const { findAllProducts, getCountProductByFilter } = require('../models/repositories/product.repo')
 
 class ProductService {
     static createProduct = async ({
@@ -102,8 +103,8 @@ class ProductService {
 
     static analyticProducts = async () => {
         const [totalProducts, totalProductDraft, totalLowStockProducts, categoryDistribution] = await Promise.all([
-            PRODUCT_MODEL.countDocuments(),
-            PRODUCT_MODEL.countDocuments({ isDraft: true }),
+            getCountDocumentsByFilter(PRODUCT_MODEL),
+            getCountDocumentsByFilter(PRODUCT_MODEL, { isDraft: true }),
             PRODUCT_MODEL.aggregate([
                 // Bước 1: Thêm trường totalVariantStock để tính tổng stock của các variantOptions (nếu có)
                 {

@@ -1,6 +1,7 @@
 const ErrorResponse = require('../../core/error.response')
 const PRODUCT_MODEL = require('../../models/product.model')
 const { removeUndefinedObject, getSelectData, convertToObjectIdMongodb } = require('../../utils')
+const { getCountDocumentsByFilter } = require('./index.repo')
 
 const findAllProducts = async (query) => {
     const {
@@ -50,7 +51,7 @@ const findAllProducts = async (query) => {
 
     const [products, totalItems] = await Promise.all([
         PRODUCT_MODEL.find(filter).sort(sortBy).skip(skip).limit(limit).select(getSelectData(select)).populate('category', 'name').lean(),
-        PRODUCT_MODEL.countDocuments(filter),
+        getCountDocumentsByFilter(PRODUCT_MODEL, filter),
     ])
 
     const totalPages = Math.ceil(totalItems / limit)

@@ -12,3 +12,4 @@ logs/
 *.log.*
 
 public
+pnpm-lock.yaml
